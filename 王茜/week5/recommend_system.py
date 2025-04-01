@@ -12,7 +12,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # 输入：comments = [['a','b','c'],['a','b','d'],['a','b','e']]
 # 其中bm25[0] = [0.0, 0.0, 0.0, 0.0, 0.0]表示第一个评论的bm25值
 # 其中bm25[0][0] = 0.0表示a的bm25值为0.0
-def bm25(comments, k=1.5, b=0.75):
+def bm25(comments, stop_words= [], k=1.5, b=0.75):
     # 计算文档总数
     N = len(comments)
     # 初始化文档长度列表和词频字典
@@ -22,6 +22,7 @@ def bm25(comments, k=1.5, b=0.75):
 
     for i, comment in enumerate(comments):
         # 记录文档长度
+        # comment = list(set(comment).difference(stop_words))
         doc_lengths.append(len(comment))
         unique_words = set()
         for word in comment:
@@ -95,7 +96,7 @@ def load_comments(filename):
     comment_list = []
     for k, v in comments.items():
         book_list.append(k)
-        comment_list.append(' '.join(v))
+        comment_list.append(v)
     return book_list, comment_list
 
 
@@ -107,7 +108,7 @@ def recommend_system(comment_list, stopwords, method='tfidf'):
         tfidf_vectorizer = TfidfVectorizer(stop_words=stopwords)
         matrix = tfidf_vectorizer.fit_transform(comment_list)
     if method == 'bm25':
-        matrix = bm25(comment_list, k=1.5, b=0.75)
+        matrix = bm25(comment_list, stopwords, k=1.5, b=0.75)
     # 余弦相似度计算
     similarity = cosine_similarity(matrix)
     print(similarity.shape)
@@ -120,7 +121,7 @@ def get_similar_books(book_list, similarity):
         ss = similarity[i, :]
         book_similarity = -ss
         recommend_books_idxes = np.argsort(book_similarity)[:11][1:]
-        recommend_books[book] = ','.join([book_list[i] for i in recommend_books_idxes])
+        recommend_books[book] = [(book_list[i], ss[i]) for i in recommend_books_idxes]
     return recommend_books
 
 
@@ -134,20 +135,24 @@ if __name__ == '__main__':
     main()
     books, comments = load_comments(douban_path)
     print(len(comments))
-
-    tfidf_similarity = recommend_system(comments, stopwords, method='tfidf')
+    tfidf_comments = [' '.join(x) for x in comments]
+    tfidf_similarity = recommend_system(tfidf_comments, stopwords, method='tfidf')
     bm25_similarity = recommend_system(comments, stopwords, method='bm25')
     books_name = "\n".join(books)
     tfidf_recommend_books = get_similar_books(books, tfidf_similarity)
     bm25_recommend_books = get_similar_books(books, bm25_similarity)
-    print(f'可选书名为\n：{books_name}')
+    print(f'可选书名为：\n{books_name}')
     while True:
-        method = input(f'请选择推荐方法, 输入1 或 2， [1: tfidf, 2: bm25]， 如需退出，请直接中断程序: ')
         book = input(f'请输入书名：如需退出，请直接中断程序\n')
         if book not in books:
             print(f'无此书名，重新输入\n')
             break
-        if method == '1':
-            print(f'tfidf 推荐书名: {tfidf_recommend_books[book]}')
-        if method == '2':
-            print(f'bm25 推荐书名: {bm25_recommend_books[book]}')
+        tfidf_book = tfidf_recommend_books[book]
+        bm25_book = bm25_recommend_books[book]
+        print(f'输入书： {book}')
+        print('tfidf 推荐')
+        for book, similarity in tfidf_book:
+            print(f'book: {book}, similarity: {similarity}')
+        print('bm25 推荐')
+        for book, similarity in bm25_book:
+            print(f'book: {book}, similarity: {similarity}')
