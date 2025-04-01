@@ -1,5 +1,6 @@
 # 导入PyTorch库
 import torch
+import numpy as np
 
 # 初始化张量
 data = torch.tensor([[2, 3],[4,5]], dtype=torch.float32)
@@ -176,6 +177,13 @@ print(tensor, "\n")
 print(tensor.add_(5), "\n")
 print(tensor)
 
+a_torch = torch.tensor([1,2,3])
+# 两者区别：
+# 内存占用：a_np = np.array(a_torch)会创建一个新的NumPy数组，占用额外的内存空间。
+# 所以a_torch修改，b_np不变
+b_np = np.array(a_torch)
+# numpy  a_torch修改，c_np变
+c_np = a_torch.numpy()
 
 print("=======================================")
 

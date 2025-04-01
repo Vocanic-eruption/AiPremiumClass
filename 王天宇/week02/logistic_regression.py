@@ -8,18 +8,19 @@ class LogisticRegression:
         self.weights = None  # 权重
         self.bias = None  # 偏置（初始预测值）
 
-    # sigmoid函数
+    # sigmoid函数（二分类使用sigmoid函数，将线性问题转化为0-1之间的概率问题）
     def _sigmoid(self, z):
         return 1 / (1 + np.exp(-z))
 
     # 损失函数
     def _loss(self, y, y_pred):
         e = 1e-8  # 添加一个极小值，防止出现除数为0的情况
-        return (-y * np.log(y_pred) - (1 - y + e) * np.log(1 - y_pred + e)).mean()
+        return (-y * np.log(y_pred + e) - (1 - y) * np.log(1 - y_pred + e)).mean()
 
     # 训练函数
     def fit(self, X, y):
         # 初始化权重和初始预测值
+        print(X.shape[1])
         self.weights = np.zeros(X.shape[1])
         self.bias = 0
         # 梯度下降
@@ -34,7 +35,7 @@ class LogisticRegression:
                 # 计算准确率
                 acc = np.mean(np.round(y_pred) == y)
                 if acc > 0.8:
-                    print(f"epoch: {i}, loss: {np.mean(loss_value)}, acc: {acc}")
+                    print(f"epoch: {i}, loss: {loss_value}, acc: {acc}")
 
     # 预测函数
     def predict(self, X):

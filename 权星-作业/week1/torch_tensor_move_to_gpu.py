@@ -17,4 +17,4 @@ if torch.cuda.is_available():
     tensor = tensor.to(device)
     print(tensor)   
 
-print("Device tensor is stored on:", tensor.device)    
+print("Device tensor is stored on:", tensor.device) 

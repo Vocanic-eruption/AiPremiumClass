@@ -6,17 +6,20 @@ import numpy as np
 X,y = load_iris(return_X_y=True)
 
 # 准备样本数据
-# x_arr = X[:100] #(100, 4)
-# y_arr = y[:100] #(100,)
+x_arr = X[:100] #(100, 4)
+y_arr = y[:100] #(100,)
 
-x_arr = X
-y_arr = y
+# x_arr = X
+# y_arr = y
+
+print(x_arr.shape)
+print(y_arr.shape)
 
 X_train, X_test, y_train, y_test = train_test_split(x_arr, y_arr, test_size=0.3)
 # print(X_train)
 # print(y_train)
 
-model = LogisticRegression(0.000023,20000) #学习率，次数
+model = LogisticRegression(0.0005,10000) #学习率，次数
 model.fit(X_train, y_train)
 
 idx = np.random.randint(len(X_test))
