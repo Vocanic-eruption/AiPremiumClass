@@ -15,17 +15,8 @@ class FaceModel(nn.Module):
         self.linear1 = nn.Linear(4096, 8192)
         self.bn1 = nn.BatchNorm1d(8192)
 
-        self.linear2 = nn.Linear(8192, 16384)
-        self.bn2 = nn.BatchNorm1d(16384)
-
-        self.linear21 = nn.Linear(16384, 4096)
-        self.bn21 = nn.BatchNorm1d(4096)
-
-        self.linear3 = nn.Linear(4096, 1024)
-        self.bn3 = nn.BatchNorm1d(1024)
-
-        self.linear31 = nn.Linear(1024, 1024)
-        self.bn31 = nn.BatchNorm1d(1024)
+        self.linear2 = nn.Linear(8192, 1024)
+        self.bn2 = nn.BatchNorm1d(1024)
 
         self.linear4 = nn.Linear(1024, 40)
         self.bn4 = nn.BatchNorm1d(40)
@@ -43,23 +34,8 @@ class FaceModel(nn.Module):
         out = self.activation(out)
         out = self.dropout(out)
 
-        out = self.linear21(out)
-        out = self.bn21(out)
-        out = self.activation(out)
-        out = self.dropout(out)
-
-        out = self.linear3(out)
-        out = self.bn3(out)
-        out = self.activation(out)
-
-        out = self.linear31(out)
-        out = self.bn31(out)
-        out = self.activation(out)
-
         out = self.linear4(out)
-        out = self.bn4(out)
-        final = self.activation(out)
-        return torch.softmax(final, dim=1)
+        return out
 
 livetti_faces = fetch_olivetti_faces(data_home="./face_data", shuffle=True)
 face = livetti_faces.images[0]

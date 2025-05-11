@@ -1,0 +1,650 @@
+加载数据...
+CSV文件的列名: ['ID', 'Movie_Name_EN', 'Movie_Name_CN', 'Crawl_Date', 'Number', 'Username', 'Date', 'Star', 'Comment', 'Like']
+数据前5行:
+   ID           Movie_Name_EN Movie_Name_CN  ... Star                                            Comment  Like
+0   0  Avengers Age of Ultron        复仇者联盟2  ...    3                                      连奥创都知道整容要去韩国。  2404
+1   1  Avengers Age of Ultron        复仇者联盟2  ...    2   非常失望，剧本完全敷衍了事，主线剧情没突破大家可以理解，可所有的人物都缺乏动机，正邪之间、...  1231
+2   2  Avengers Age of Ultron        复仇者联盟2  ...    2   2015年度最失望作品。以为面面俱到，实则画蛇添足；以为主题深刻，实则老调重弹；以为推陈出...  1052
+3   3  Avengers Age of Ultron        复仇者联盟2  ...    4   《铁人2》中勾引钢铁侠，《妇联1》中勾引鹰眼，《美队2》中勾引美国队长，在《妇联2》中终于...  1045
+4   4  Avengers Age of Ultron        复仇者联盟2  ...    2                                  虽然从头打到尾，但是真的很无聊啊。   723
+
+[5 rows x 10 columns]
+处理后数据集大小: (2000, 11)
+正面评论数量: 1000
+负面评论数量: 1000
+预处理文本...
+训练SentencePiece模型 (vocab_size=8000, model_type=unigram)...
+sentencepiece_trainer.cc(78) LOG(INFO) Starts training with : 
+trainer_spec {
+  input: /var/folders/xv/gxlzn9z16cx2pdjqdjk_8g5h0000gn/T/tmpl0mb9lpi
+  input_format: 
+  model_prefix: spm_unigram
+  model_type: UNIGRAM
+  vocab_size: 8000
+  self_test_sample_size: 0
+  character_coverage: 0.9995
+  input_sentence_size: 0
+  shuffle_input_sentence: 1
+  seed_sentencepiece_size: 1000000
+  shrinking_factor: 0.75
+  max_sentence_length: 4192
+  num_threads: 16
+  num_sub_iterations: 2
+  max_sentencepiece_length: 16
+  split_by_unicode_script: 1
+  split_by_number: 1
+  split_by_whitespace: 1
+  split_digits: 0
+  pretokenization_delimiter: 
+  treat_whitespace_as_suffix: 0
+  allow_whitespace_only_pieces: 0
+  required_chars: 
+  byte_fallback: 0
+  vocabulary_output_piece_score: 1
+  train_extremely_large_corpus: 0
+  seed_sentencepieces_file: 
+  hard_vocab_limit: 1
+  use_all_vocab: 0
+  unk_id: 1
+  bos_id: 2
+  eos_id: 3
+  pad_id: 0
+  unk_piece: <unk>
+  bos_piece: <s>
+  eos_piece: </s>
+  pad_piece: <pad>
+  unk_surface:  ⁇ 
+  enable_differential_privacy: 0
+  differential_privacy_noise_level: 0
+  differential_privacy_clipping_threshold: 0
+}
+normalizer_spec {
+  name: nmt_nfkc_cf
+  add_dummy_prefix: 1
+  remove_extra_whitespaces: 1
+  escape_whitespaces: 1
+  normalization_rule_tsv: 
+}
+denormalizer_spec {}
+trainer_interface.cc(353) LOG(INFO) SentenceIterator is not specified. Using MultiFileSentenceIterator.
+trainer_interface.cc(185) LOG(INFO) Loading corpus: /var/folders/xv/gxlzn9z16cx2pdjqdjk_8g5h0000gn/T/tmpl0mb9lpi
+trainer_interface.cc(409) LOG(INFO) Loaded all 1592 sentences
+trainer_interface.cc(425) LOG(INFO) Adding meta_piece: <pad>
+trainer_interface.cc(425) LOG(INFO) Adding meta_piece: <unk>
+trainer_interface.cc(425) LOG(INFO) Adding meta_piece: <s>
+trainer_interface.cc(425) LOG(INFO) Adding meta_piece: </s>
+trainer_interface.cc(430) LOG(INFO) Normalizing sentences...
+trainer_interface.cc(539) LOG(INFO) all chars count=51387
+trainer_interface.cc(550) LOG(INFO) Done: 99.9514% characters are covered.
+trainer_interface.cc(560) LOG(INFO) Alphabet size=2305
+trainer_interface.cc(561) LOG(INFO) Final character coverage=0.999513
+trainer_interface.cc(592) LOG(INFO) Done! preprocessed 1592 sentences.
+unigram_model_trainer.cc(265) LOG(INFO) Making suffix array...
+unigram_model_trainer.cc(269) LOG(INFO) Extracting frequent sub strings... node_num=12799
+unigram_model_trainer.cc(312) LOG(INFO) Initialized 11843 seed sentencepieces
+trainer_interface.cc(598) LOG(INFO) Tokenizing input sentences with whitespace: 1592
+trainer_interface.cc(609) LOG(INFO) Done! 2144
+unigram_model_trainer.cc(602) LOG(INFO) Using 2144 sentences for EM training
+unigram_model_trainer.cc(618) LOG(INFO) EM sub_iter=0 size=8269 obj=103.81 num_tokens=26193 num_tokens/piece=3.16761
+unigram_model_trainer.cc(618) LOG(INFO) EM sub_iter=1 size=7878 obj=100.473 num_tokens=26273 num_tokens/piece=3.33498
+trainer_interface.cc(687) LOG(INFO) Saving model: spm_unigram.model
+trainer_interface.cc(699) LOG(INFO) Saving vocabs: spm_unigram.vocab
+SentencePiece模型训练完成，词表大小: 8000
+训练SentencePiece模型 (vocab_size=8000, model_type=bpe)...
+sentencepiece_trainer.cc(78) LOG(INFO) Starts training with : 
+trainer_spec {
+  input: /var/folders/xv/gxlzn9z16cx2pdjqdjk_8g5h0000gn/T/tmphtzt10kf
+  input_format: 
+  model_prefix: spm_bpe
+  model_type: BPE
+  vocab_size: 8000
+  self_test_sample_size: 0
+  character_coverage: 0.9995
+  input_sentence_size: 0
+  shuffle_input_sentence: 1
+  seed_sentencepiece_size: 1000000
+  shrinking_factor: 0.75
+  max_sentence_length: 4192
+  num_threads: 16
+  num_sub_iterations: 2
+  max_sentencepiece_length: 16
+  split_by_unicode_script: 1
+  split_by_number: 1
+  split_by_whitespace: 1
+  split_digits: 0
+  pretokenization_delimiter: 
+  treat_whitespace_as_suffix: 0
+  allow_whitespace_only_pieces: 0
+  required_chars: 
+  byte_fallback: 0
+  vocabulary_output_piece_score: 1
+  train_extremely_large_corpus: 0
+  seed_sentencepieces_file: 
+  hard_vocab_limit: 1
+  use_all_vocab: 0
+  unk_id: 1
+  bos_id: 2
+  eos_id: 3
+  pad_id: 0
+  unk_piece: <unk>
+  bos_piece: <s>
+  eos_piece: </s>
+  pad_piece: <pad>
+  unk_surface:  ⁇ 
+  enable_differential_privacy: 0
+  differential_privacy_noise_level: 0
+  differential_privacy_clipping_threshold: 0
+}
+normalizer_spec {
+  name: nmt_nfkc_cf
+  add_dummy_prefix: 1
+  remove_extra_whitespaces: 1
+  escape_whitespaces: 1
+  normalization_rule_tsv: 
+}
+denormalizer_spec {}
+trainer_interface.cc(353) LOG(INFO) SentenceIterator is not specified. Using MultiFileSentenceIterator.
+trainer_interface.cc(185) LOG(INFO) Loading corpus: /var/folders/xv/gxlzn9z16cx2pdjqdjk_8g5h0000gn/T/tmphtzt10kf
+trainer_interface.cc(409) LOG(INFO) Loaded all 1592 sentences
+trainer_interface.cc(425) LOG(INFO) Adding meta_piece: <pad>
+trainer_interface.cc(425) LOG(INFO) Adding meta_piece: <unk>
+trainer_interface.cc(425) LOG(INFO) Adding meta_piece: <s>
+trainer_interface.cc(425) LOG(INFO) Adding meta_piece: </s>
+trainer_interface.cc(430) LOG(INFO) Normalizing sentences...
+trainer_interface.cc(539) LOG(INFO) all chars count=51387
+trainer_interface.cc(550) LOG(INFO) Done: 99.9514% characters are covered.
+trainer_interface.cc(560) LOG(INFO) Alphabet size=2305
+trainer_interface.cc(561) LOG(INFO) Final character coverage=0.999513
+trainer_interface.cc(592) LOG(INFO) Done! preprocessed 1592 sentences.
+trainer_interface.cc(598) LOG(INFO) Tokenizing input sentences with whitespace: 1592
+trainer_interface.cc(609) LOG(INFO) Done! 2144
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=328 min_freq=5
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=76 size=20 all=27332 active=3294 piece=演技
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=51 size=40 all=28782 active=4744 piece=时候
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=40 size=60 all=29910 active=5872 piece=中国
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=33 size=80 all=30808 active=6770 piece=不过
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=27 size=100 all=31681 active=7643 piece=这种
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=27 min_freq=4
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=24 size=120 all=32328 active=2191 piece=不会
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=22 size=140 all=32972 active=2835 piece=地方
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=20 size=160 all=33547 active=3410 piece=哭了
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=19 size=180 all=34046 active=3909 piece=一部电影
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=17 size=200 all=34529 active=4392 piece=只有
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=17 min_freq=4
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=16 size=220 all=35018 active=2186 piece=▁t
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=15 size=240 all=35457 active=2625 piece=ma
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=14 size=260 all=35889 active=3057 piece=到了
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=14 size=280 all=36314 active=3482 piece=▁虽然
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=13 size=300 all=36643 active=3811 piece=别人
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=13 min_freq=3
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=13 size=320 all=37023 active=2189 piece=周星驰
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=12 size=340 all=37334 active=2500 piece=理解
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=12 size=360 all=37688 active=2854 piece=▁我觉得
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=11 size=380 all=37999 active=3165 piece=总是
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=11 size=400 all=38323 active=3489 piece=▁有点
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=11 min_freq=3
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=10 size=420 all=38553 active=2138 piece=到底
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=10 size=440 all=38848 active=2433 piece=现实
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=9 size=460 all=39148 active=2733 piece=ld
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=9 size=480 all=39374 active=2959 piece=充满
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=9 size=500 all=39640 active=3225 piece=没看
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=9 min_freq=3
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=9 size=520 all=39892 active=2220 piece=▁除了
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=8 size=540 all=40105 active=2433 piece=▁w
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=8 size=560 all=40331 active=2659 piece=恐怖
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=8 size=580 all=40584 active=2912 piece=装逼
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=8 size=600 all=40791 active=3119 piece=并没有
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=8 min_freq=3
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=7 size=620 all=40963 active=2200 piece=一切
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=7 size=640 all=41180 active=2417 piece=努力
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=7 size=660 all=41404 active=2641 piece=总之
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=7 size=680 all=41627 active=2864 piece=猴子
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=7 size=700 all=41846 active=3083 piece=配乐
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=7 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=7 size=720 all=41999 active=2233 piece=无厘头
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=6 size=740 all=42154 active=2388 piece=si
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=6 size=760 all=42312 active=2546 piece=依旧
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=6 size=780 all=42500 active=2734 piece=合理
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=6 size=800 all=42676 active=2910 piece=建议
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=6 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=6 size=820 all=42852 active=2301 piece=易峰
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=6 size=840 all=43031 active=2480 piece=的就
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=6 size=860 all=43216 active=2665 piece=预期
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=6 size=880 all=43330 active=2779 piece=好电影
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=6 size=900 all=43523 active=2972 piece=起来的
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=6 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=920 all=43614 active=2256 piece=▁又
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=940 all=43735 active=2377 piece=了这
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=960 all=43876 active=2518 piece=刺激
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=980 all=44038 active=2680 piece=太过
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=1000 all=44199 active=2841 piece=很有
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=5 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=1020 all=44367 active=2369 piece=旋律
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=1040 all=44529 active=2531 piece=生硬
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=1060 all=44686 active=2688 piece=而言
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=1080 all=44848 active=2850 piece=那一
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=1100 all=44958 active=2960 piece=▁真是
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=5 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=1120 all=45091 active=2377 piece=彭于晏
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=1140 all=45251 active=2537 piece=第二部
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=5 size=1160 all=45397 active=2683 piece=没有之一
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1180 all=45490 active=2776 piece=▁快
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1200 all=45584 active=2870 piece=不断
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=4 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1220 all=45703 active=2392 piece=内心
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1240 all=45816 active=2505 piece=后再
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1260 all=45932 active=2621 piece=太烂
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1280 all=46046 active=2735 piece=得不
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1300 all=46162 active=2851 piece=拿捏
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=4 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1320 all=46280 active=2420 piece=浩克
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1340 all=46393 active=2533 piece=相当
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1360 all=46516 active=2656 piece=美队
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1380 all=46637 active=2777 piece=谋子
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1400 all=46757 active=2897 piece=里最
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=4 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1420 all=46832 active=2406 piece=▁人物
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1440 all=46884 active=2458 piece=一点没
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1460 all=47009 active=2583 piece=十分钟
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1480 all=47133 active=2707 piece=并不是
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1500 all=47260 active=2834 piece=的一个
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=4 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1520 all=47389 active=2485 piece=迪士尼
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=4 size=1540 all=47496 active=2592 piece=整部电影
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1560 all=47597 active=2693 piece=hh
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1580 all=47639 active=2735 piece=▁跑
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1600 all=47718 active=2814 piece=丝毫
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=3 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1620 all=47807 active=2471 piece=人鱼
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1640 all=47879 active=2543 piece=做作
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1660 all=47958 active=2622 piece=别说
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1680 all=48049 active=2713 piece=只会
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1700 all=48131 active=2795 piece=国外
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=3 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1720 all=48215 active=2486 piece=太奇
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1740 all=48295 active=2566 piece=寡妇
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1760 all=48380 active=2651 piece=张涵
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1780 all=48463 active=2734 piece=想过
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1800 all=48557 active=2828 piece=拙劣
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=3 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1820 all=48648 active=2515 piece=有两
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1840 all=48741 active=2608 piece=气质
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1860 all=48825 active=2692 piece=特意
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1880 all=48915 active=2782 piece=硬伤
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1900 all=49004 active=2871 piece=美术
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=3 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1920 all=49093 active=2534 piece=警察
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1940 all=49185 active=2626 piece=那只
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1960 all=49267 active=2708 piece=麻烦
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=1980 all=49302 active=2743 piece=▁只是
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2000 all=49337 active=2778 piece=▁毫无
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=3 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2020 all=49392 active=2519 piece=不合理
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2040 all=49477 active=2604 piece=值票价
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2060 all=49563 active=2690 piece=在这个
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2080 all=49654 active=2781 piece=心动魄
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2100 all=49741 active=2868 piece=我看了
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=3 min_freq=2
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2120 all=49835 active=2576 piece=正能量
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2140 all=49925 active=2666 piece=的冲动
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2160 all=50016 active=2757 piece=童自荣
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2180 all=50102 active=2843 piece=还是一
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2200 all=50170 active=2911 piece=▁之所以
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=3 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2220 all=50217 active=2553 piece=什么东西
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2240 all=50309 active=2645 piece=惊心动魄
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2260 all=50396 active=2732 piece=良心作品
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=3 size=2280 all=50469 active=2805 piece=看不下去了
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2300 all=50511 active=2847 piece=dy
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2320 all=50532 active=2545 piece=ue
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2340 all=50549 active=2562 piece=▁拍
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2360 all=50574 active=2587 piece=一发
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2380 all=50627 active=2640 piece=万个
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2400 all=50683 active=2696 piece=不时
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2420 all=50737 active=2585 piece=中最
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2440 all=50789 active=2637 piece=了但
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2460 all=50841 active=2689 piece=仅此
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2480 all=50892 active=2740 piece=作家
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2500 all=50946 active=2794 piece=光正
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2520 all=50999 active=2597 piece=凌乱
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2540 all=51050 active=2648 piece=包袱
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2560 all=51106 active=2704 piece=发表
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2580 all=51159 active=2757 piece=吗为
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2600 all=51207 active=2805 piece=善良
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2620 all=51254 active=2605 piece=在给
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2640 all=51308 active=2659 piece=大气
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2660 all=51362 active=2713 piece=女生
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2680 all=51415 active=2766 piece=安寨
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2700 all=51465 active=2816 piece=小徐
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2720 all=51512 active=2617 piece=左耳
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2740 all=51564 active=2669 piece=强的
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2760 all=51616 active=2721 piece=忍着
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2780 all=51670 active=2775 piece=想吐
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2800 all=51723 active=2828 piece=所提
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2820 all=51771 active=2632 piece=投地
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2840 all=51824 active=2685 piece=插曲
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2860 all=51880 active=2741 piece=无敌
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2880 all=51935 active=2796 piece=是谁
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2900 all=51983 active=2844 piece=服务
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2920 all=52035 active=2648 piece=模样
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2940 all=52089 active=2702 piece=治愈
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2960 all=52139 active=2752 piece=深深
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=2980 all=52188 active=2801 piece=烂俗
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3000 all=52234 active=2847 piece=狮子
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3020 all=52290 active=2664 piece=的吗
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3040 all=52346 active=2720 piece=相似
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3060 all=52401 active=2775 piece=破碎
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3080 all=52456 active=2830 piece=粗糙
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3100 all=52510 active=2884 piece=网评
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3120 all=52560 active=2672 piece=脑洞
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3140 all=52614 active=2726 piece=蚁人
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3160 all=52667 active=2779 piece=试问
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3180 all=52722 active=2834 piece=车厢
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3200 all=52777 active=2889 piece=都吓
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3220 all=52833 active=2692 piece=难忘
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3240 all=52887 active=2746 piece=高兴
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3260 all=52913 active=2772 piece=zoo
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3280 all=52927 active=2786 piece=▁前面
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3300 all=52942 active=2801 piece=▁快银
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3320 all=52956 active=2660 piece=▁梦想
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3340 all=52975 active=2679 piece=▁矫情
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3360 all=52991 active=2695 piece=▁队长
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3380 all=53032 active=2736 piece=万年太
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3400 all=53080 active=2784 piece=不让人
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3420 all=53132 active=2703 piece=也不去
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3440 all=53190 active=2761 piece=事的人
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3460 all=53241 active=2812 piece=但看完
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3480 all=53293 active=2864 piece=写真集
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3500 all=53344 active=2915 piece=又臭又
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3520 all=53399 active=2719 piece=哟这个
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3540 all=53454 active=2774 piece=大场面
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3560 all=53510 active=2830 piece=存在感
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3580 all=53566 active=2886 piece=就知道
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3600 all=53617 active=2937 piece=心掏肺
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3620 all=53672 active=2733 piece=我整个
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3640 all=53724 active=2785 piece=明一個
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3660 all=53775 active=2836 piece=有点萌
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3680 all=53833 active=2894 piece=浓浓的
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3700 all=53888 active=2949 piece=画面美
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3720 all=53942 active=2745 piece=的幽默
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3740 all=53996 active=2799 piece=的转变
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3760 all=54052 active=2855 piece=票房的
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3780 all=54103 active=2906 piece=脑子里
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3800 all=54162 active=2965 piece=谋女郎
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3820 all=54213 active=2757 piece=这么久
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3840 all=54266 active=2810 piece=都不好
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3860 all=54319 active=2863 piece=高票房
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3880 all=54330 active=2874 piece=▁和同学
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3900 all=54345 active=2889 piece=▁看过了
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3920 all=54385 active=2756 piece=不合逻辑
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3940 all=54437 active=2808 piece=了十二年
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3960 all=54491 active=2862 piece=停不下来
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=3980 all=54540 active=2911 piece=国产良心
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4000 all=54585 active=2956 piece=开心就好
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4020 all=54637 active=2780 piece=我最喜欢
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4040 all=54685 active=2828 piece=有点尴尬
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4060 all=54738 active=2881 piece=演员演的
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4080 all=54794 active=2937 piece=相提并论
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4100 all=54846 active=2989 piece=能体会到
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4120 all=54900 active=2794 piece=还是一部
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4140 all=54955 active=2849 piece=靠自己的
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4160 all=54966 active=2860 piece=▁就这样吧
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4180 all=54996 active=2890 piece=兔子和狐狸
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4200 all=55051 active=2945 piece=我连一颗星
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=2 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4220 all=55106 active=2804 piece=真的很难看
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4240 all=55155 active=2853 piece=ything
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4260 all=55192 active=2890 piece=有点不知所云
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=2 size=4280 all=55234 active=2932 piece=zootopia
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4300 all=55241 active=2939 piece=▁犯
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4320 all=55248 active=2769 piece=下午
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4340 all=55267 active=2788 piece=中惊
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4360 all=55285 active=2806 piece=五彩
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4380 all=55305 active=2826 piece=佛都
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4400 all=55325 active=2846 piece=具吗
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4420 all=55344 active=2784 piece=分徐
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4440 all=55363 active=2803 piece=半年
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4460 all=55380 active=2820 piece=只因
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4480 all=55396 active=2836 piece=和和
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4500 all=55415 active=2855 piece=场有
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4520 all=55435 active=2789 piece=太戳
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4540 all=55452 active=2806 piece=学了
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4560 all=55470 active=2824 piece=尽重
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4580 all=55488 active=2842 piece=得当
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4600 all=55505 active=2859 piece=愉快
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4620 all=55523 active=2792 piece=我神
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4640 all=55540 active=2809 piece=抢镜
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4660 all=55559 active=2828 piece=放松
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4680 all=55576 active=2845 piece=是否
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4700 all=55596 active=2865 piece=来吧
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4720 all=55614 active=2797 piece=棒球
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4740 all=55630 active=2813 piece=没劲
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4760 all=55644 active=2827 piece=烂成
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4780 all=55661 active=2844 piece=由头
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4800 all=55679 active=2862 piece=的黄
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4820 all=55697 active=2801 piece=看下
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4840 all=55717 active=2821 piece=着脸
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4860 all=55735 active=2839 piece=组有
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4880 all=55754 active=2858 piece=脸我
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4900 all=55772 active=2876 piece=行对
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4920 all=55790 active=2805 piece=袭击
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4940 all=55807 active=2822 piece=谈点
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4960 all=55824 active=2839 piece=还顾
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=4980 all=55843 active=2858 piece=酸啊
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5000 all=55863 active=2878 piece=陈凯
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5020 all=55867 active=2796 piece=与地
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5040 all=55886 active=2815 piece=伙儿
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5060 all=55905 active=2834 piece=兼班
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5080 all=55922 active=2851 piece=号侧
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5100 all=55942 active=2871 piece=在無
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5120 all=55956 active=2810 piece=学学
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5140 all=55974 active=2828 piece=弃遗
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5160 all=55991 active=2845 piece=扶持
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5180 all=56008 active=2862 piece=更要
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5200 all=56028 active=2882 piece=比某
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5220 all=56045 active=2817 piece=流和
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5240 all=56063 active=2835 piece=独占
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5260 all=56081 active=2853 piece=知音
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5280 all=56098 active=2870 piece=至尊
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5300 all=56115 active=2887 piece=记住
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5320 all=56130 active=2819 piece=走人
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5340 all=56149 active=2838 piece=重返
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5360 all=56169 active=2858 piece=骂人
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5380 all=56183 active=2872 piece=ect
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5400 all=56182 active=2871 piece=▁不像
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5420 all=56196 active=2823 piece=▁中二
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5440 all=56194 active=2821 piece=▁安生
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5460 all=56192 active=2819 piece=▁爱上
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5480 all=56194 active=2821 piece=一定素
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5500 all=56213 active=2840 piece=上最后
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5520 all=56231 active=2827 piece=递啊
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5540 all=56250 active=2846 piece=不管你
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5560 all=56269 active=2865 piece=个毛的
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5580 all=56287 active=2883 piece=也是有
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5600 all=56304 active=2900 piece=了原著
+bpe_model_trainer.cc(159) LOG(INFO) Updating active symbols. max_freq=1 min_freq=1
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5620 all=56321 active=2831 piece=讨人
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5640 all=56337 active=2847 piece=了这片
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5660 all=56356 active=2866 piece=他唱的
+bpe_model_trainer.cc(268) LOG(INFO) Added: freq=1 size=5680 all=56374 active=2884 piece=但两个
+trainer_interface.cc(687) LOG(INFO) Saving model: spm_bpe.model
+trainer_interface.cc(699) LOG(INFO) Saving vocabs: spm_bpe.vocab
+SentencePiece模型训练完成，词表大小: 8000
+
+使用 jieba 分词...
+Building prefix dict from the default dictionary ...
+Loading model from cache /var/folders/xv/gxlzn9z16cx2pdjqdjk_8g5h0000gn/T/jieba.cache
+Loading model cost 0.238 seconds.
+Prefix dict has been built successfully.
+词典大小: 5000
+
+jieba + nb:
+模型: 朴素贝叶斯
+准确率: 0.7475
+分类报告:
+              precision    recall  f1-score   support
+
+          负面       0.74      0.75      0.75       197
+          正面       0.76      0.74      0.75       203
+
+    accuracy                           0.75       400
+   macro avg       0.75      0.75      0.75       400
+weighted avg       0.75      0.75      0.75       400
+
+
+jieba + lr:
+模型: 逻辑回归
+准确率: 0.7100
+分类报告:
+              precision    recall  f1-score   support
+
+          负面       0.70      0.72      0.71       197
+          正面       0.72      0.70      0.71       203
+
+    accuracy                           0.71       400
+   macro avg       0.71      0.71      0.71       400
+weighted avg       0.71      0.71      0.71       400
+
+
+使用 sentencepiece_unigram 分词...
+词典大小: 5000
+
+sentencepiece_unigram + nb:
+模型: 朴素贝叶斯
+准确率: 0.7375
+分类报告:
+              precision    recall  f1-score   support
+
+          负面       0.72      0.77      0.74       197
+          正面       0.76      0.71      0.73       203
+
+    accuracy                           0.74       400
+   macro avg       0.74      0.74      0.74       400
+weighted avg       0.74      0.74      0.74       400
+
+
+sentencepiece_unigram + lr:
+模型: 逻辑回归
+准确率: 0.7150
+分类报告:
+              precision    recall  f1-score   support
+
+          负面       0.71      0.72      0.71       197
+          正面       0.72      0.71      0.72       203
+
+    accuracy                           0.71       400
+   macro avg       0.71      0.72      0.71       400
+weighted avg       0.72      0.71      0.72       400
+
+
+使用 sentencepiece_bpe 分词...
+词典大小: 4932
+
+sentencepiece_bpe + nb:
+模型: 朴素贝叶斯
+准确率: 0.7150
+分类报告:
+              precision    recall  f1-score   support
+
+          负面       0.70      0.74      0.72       197
+          正面       0.73      0.69      0.71       203
+
+    accuracy                           0.71       400
+   macro avg       0.72      0.72      0.71       400
+weighted avg       0.72      0.71      0.71       400
+
+
+sentencepiece_bpe + lr:
+模型: 逻辑回归
+准确率: 0.7075
+分类报告:
+              precision    recall  f1-score   support
+
+          负面       0.70      0.71      0.71       197
+          正面       0.71      0.70      0.71       203
+
+    accuracy                           0.71       400
+   macro avg       0.71      0.71      0.71       400
+weighted avg       0.71      0.71      0.71       400
+
+
+不同分词工具和模型的准确率比较:
+------------------------------------------------------------
+分词工具                 | 朴素贝叶斯           | 逻辑回归           
+------------------------------------------------------------
+jieba                | 0.7475 | 0.7100
+sentencepiece_unigram | 0.7375 | 0.7150
+sentencepiece_bpe    | 0.7150 | 0.7075
+------------------------------------------------------------
+最佳配置: jieba + 朴素贝叶斯
+最佳准确率: 0.7475
+
+最佳配置: jieba + 朴素贝叶斯
+
+使用最佳配置进行最终模型训练...
+模型: 朴素贝叶斯
+准确率: 0.7475
+分类报告:
+              precision    recall  f1-score   support
+
+          负面       0.74      0.75      0.75       197
+          正面       0.76      0.74      0.75       203
+
+    accuracy                           0.75       400
+   macro avg       0.75      0.75      0.75       400
+weighted avg       0.75      0.75      0.75       400
+
+
+测试示例评论:
+评论: 这部电影太棒了，演员的表演非常精彩，剧情扣人心弦
+预测: 正面
+概率: 负面 0.2366, 正面 0.7634
+--------------------------------------------------
+评论: 画面不错，但是剧情太差了，浪费时间
+预测: 正面
+概率: 负面 0.4081, 正面 0.5919
+--------------------------------------------------
+评论: 特效一般，演员演技尚可，整体中规中矩
+预测: 正面
+概率: 负面 0.4896, 正面 0.5104
+--------------------------------------------------
+评论: 剧情老套，毫无新意，浪费票钱
+预测: 负面
+概率: 负面 0.7940, 正面 0.2060
+--------------------------------------------------
+评论: 配乐非常出色，节奏把控得当，是今年最好看的电影之一
+预测: 正面
+概率: 负面 0.2783, 正面 0.7217
+--------------------------------------------------

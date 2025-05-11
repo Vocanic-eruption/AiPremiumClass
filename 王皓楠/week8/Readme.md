@@ -1,0 +1,5 @@
+本章代码比较难，主要是起巩固的作用，并在源代码基础上进行理解修改
+new_process.py为读取部分，拆成了两个数据集，需要分开分别读取，并且区分是前联还是后联作用。
+new_seqseq.py对于不同的encoder模式尝试也是设置mod参数，在mod不同时返回不同的hidden_state，并且使用mod改变decoder中hidden_dim应该具有的对应维度，来与encoder对应上。以此构建不同的seqseq模型。
+训练部分无改变.
+new_seqseq_infer.py对于attention的处理主要是推理阶段encoder多出来的enc_outputs，即encoder层最后一个时间步的输出应该需要被使用上，因此推理阶段decoder需要读取这个参数。并且需要循环更新自己的dec_outputs和hidden_state继续传入。

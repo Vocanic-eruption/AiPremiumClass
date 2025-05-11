@@ -1,0 +1,17 @@
+﻿bin-debug/
+bin-release/
+[Oo]bj/
+[Bb]in/
+__pycache__
+*.swf
+*.air
+*.ipa
+*.apk
+
+datasets/sem_eval/SemEval 2018 - task E-c
+datasets/cifar10/cifar-10-batches-py
+datasets/kmnist/KMNIST
+datasets/olivetti_faces/olivetti_py3.pkz
+datasets/douban_comments/DMSC.csv
+datasets/weather/Summary of Weather.csv
+datasets/weather/Weather Station Locations.csv

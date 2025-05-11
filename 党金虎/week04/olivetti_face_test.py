@@ -41,21 +41,25 @@ if __name__ == '__main__':
 
     #训练模型
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # 确认是否有GPU
-    model = SimplNN().to(device) # 将模型移动到GPU上
     criterion = nn.CrossEntropyLoss() # 损失函数
 
     # 定义不同优化器
     optimizers = {
-        'SGD': torch.optim.SGD(model.parameters(), lr=0.001),
+        'SGD',
         #'Adam': torch.optim.Adam(model.parameters(), lr=0.01),
-         'Adam': torch.optim.Adam(model.parameters(),lr=0.01),
+         'Adam',
     }
 
     # 训练和测试
     results = {}
 
-    for optimizer_name, optimizer in optimizers.items():
+    for optimizer_name in optimizers:
+        model = SimplNN().to(device) # 将模型移动到GPU上
         print(f'训练 Optimizer: {optimizer_name}')
+        if optimizer_name == 'SGD':
+            optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+        elif optimizer_name == 'Adam':
+            optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
         train_losses = []
         test_losses = []
 

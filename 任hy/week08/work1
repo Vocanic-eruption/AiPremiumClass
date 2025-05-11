@@ -1,0 +1,138 @@
+import tensorflow as tf
+from tensorflow.keras.layers import Embedding, LSTM, Dense, Input, Attention, Concatenate
+from tensorflow.keras.models import Model
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import os
+from datetime import datetime
+import matplotlib.pyplot as plt
+
+# 1. 数据准备
+def load_data(file_path):
+    df = pd.read_csv(file_path)
+    # 假设数据集有两列: '上联'和'下联'
+    input_texts = df['上联'].tolist()
+    target_texts = df['下联'].tolist()
+    return input_texts, target_texts
+
+# 文件路径需要根据实际数据集调整
+file_path = 'chinese_couplets.csv'
+input_texts, target_texts = load_data(file_path)
+
+# 添加开始和结束标记
+target_texts = ['<start> ' + text + ' <end>' for text in target_texts]
+
+# 2. 文本预处理和tokenization
+def tokenize_texts(input_texts, target_texts, num_words=5000):
+    # 输入和输出使用不同的tokenizer
+    input_tokenizer = Tokenizer(num_words=num_words, filters='')
+    input_tokenizer.fit_on_texts(input_texts)
+    input_sequences = input_tokenizer.texts_to_sequences(input_texts)
+    input_vocab_size = len(input_tokenizer.word_index) + 1
+    
+    target_tokenizer = Tokenizer(num_words=num_words, filters='')
+    target_tokenizer.fit_on_texts(target_texts)
+    target_sequences = target_tokenizer.texts_to_sequences(target_texts)
+    target_vocab_size = len(target_tokenizer.word_index) + 1
+    
+    return (input_tokenizer, input_sequences, input_vocab_size, 
+            target_tokenizer, target_sequences, target_vocab_size)
+
+input_tokenizer, input_sequences, input_vocab_size, \
+target_tokenizer, target_sequences, target_vocab_size = tokenize_texts(input_texts, target_texts)
+
+# 3. 填充序列
+max_input_len = max(len(seq) for seq in input_sequences)
+max_target_len = max(len(seq) for seq in target_sequences)
+
+encoder_input_data = pad_sequences(input_sequences, maxlen=max_input_len, padding='post')
+decoder_input_data = pad_sequences(target_sequences, maxlen=max_target_len, padding='post')
+
+# 创建decoder_target_data，它是decoder_input_data向前偏移一个时间步
+decoder_target_data = np.zeros_like(decoder_input_data)
+decoder_target_data[:, :-1] = decoder_input_data[:, 1:]
+
+# 4. 构建带有Attention的Seq2Seq模型
+def build_attention_seq2seq_model(
+    input_vocab_size, 
+    target_vocab_size, 
+    max_input_len, 
+    max_target_len, 
+    embedding_dim=256, 
+    lstm_units=256,
+    hidden_state_type='concat'  # 'concat' 或 'add'
+):
+    # Encoder
+    encoder_inputs = Input(shape=(max_input_len,))
+    encoder_embedding = Embedding(input_vocab_size, embedding_dim)(encoder_inputs)
+    
+    # 使用双向LSTM作为encoder
+    encoder_lstm = LSTM(lstm_units, return_sequences=True, return_state=True)
+    encoder_outputs, state_h, state_c = encoder_lstm(encoder_embedding)
+    
+    # Decoder
+    decoder_inputs = Input(shape=(max_target_len,))
+    decoder_embedding = Embedding(target_vocab_size, embedding_dim)(decoder_inputs)
+    
+    decoder_lstm = LSTM(lstm_units, return_sequences=True, return_state=True)
+    
+    # Attention层
+    attention = Attention()
+    
+    # 初始decoder状态使用encoder的最终状态
+    decoder_outputs, _, _ = decoder_lstm(decoder_embedding, initial_state=[state_h, state_c])
+    
+    # 应用attention
+    context_vector = attention([decoder_outputs, encoder_outputs])
+    
+    # 合并context vector和decoder输出
+    if hidden_state_type == 'concat':
+        decoder_combined_context = Concatenate(axis=-1)([decoder_outputs, context_vector])
+    else:  # add
+        decoder_combined_context = tf.keras.layers.Add()([decoder_outputs, context_vector])
+    
+    # 全连接层
+    decoder_dense = Dense(target_vocab_size, activation='softmax')
+    decoder_outputs = decoder_dense(decoder_combined_context)
+    
+    # 定义模型
+    model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    
+    return model
+
+# 5. 训练模型
+def train_model(model, encoder_input_data, decoder_input_data, decoder_target_data, 
+                batch_size=64, epochs=10, validation_split=0.2):
+    # 设置TensorBoard
+    log_dir = "logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    
+    # 训练模型
+    history = model.fit(
+        [encoder_input_data, decoder_input_data],
+        np.expand_dims(decoder_target_data, -1),
+        batch_size=batch_size,
+        epochs=epochs,
+        validation_split=validation_split,
+        callbacks=[tensorboard_callback]
+    )
+    
+    return history
+
+# 构建并训练模型
+model = build_attention_seq2seq_model(
+    input_vocab_size, 
+    target_vocab_size, 
+    max_input_len, 
+    max_target_len,
+    hidden_state_type='concat'  # 初始使用concat方式
+)
+
+history = train_model(model, encoder_input_data, decoder_input_data, decoder_target_data)
+
+# 保存模型
+model.save('couplet_seq2seq_attention.h5')

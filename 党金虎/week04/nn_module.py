@@ -11,7 +11,7 @@ class SimplNN(nn.Module):
         self.fc2 = nn.Linear(512,256)
         self.bn2= nn.BatchNorm1d(256) # 批量归一化层
         self.fc3 = nn.Linear(256, 40) # 输出层
-        self.dropout = nn.Dropout(p=0.5) # Dropout 正则化
+        self.dropout = nn.Dropout(p=0.3) # Dropout 正则化
 
 
     # 定义前向传播

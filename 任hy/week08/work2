@@ -1,0 +1,47 @@
+# 构建concat版本的模型
+model_concat = build_attention_seq2seq_model(
+    input_vocab_size, 
+    target_vocab_size, 
+    max_input_len, 
+    max_target_len,
+    hidden_state_type='concat'
+)
+
+history_concat = train_model(
+    model_concat, 
+    encoder_input_data, 
+    decoder_input_data, 
+    decoder_target_data,
+    epochs=5  # 为了演示，减少epochs
+)
+
+# 构建add版本的模型
+model_add = build_attention_seq2seq_model(
+    input_vocab_size, 
+    target_vocab_size, 
+    max_input_len, 
+    max_target_len,
+    hidden_state_type='add'
+)
+
+history_add = train_model(
+    model_add, 
+    encoder_input_data, 
+    decoder_input_data, 
+    decoder_target_data,
+    epochs=5  # 为了演示，减少epochs
+)
+
+# 比较两种模型的性能
+def plot_history(history_concat, history_add, metric='val_accuracy'):
+    plt.figure(figsize=(10, 6))
+    plt.plot(history_concat.history[metric], label='Concat Hidden States')
+    plt.plot(history_add.history[metric], label='Add Hidden States')
+    plt.title(f'Model Comparison ({metric})')
+    plt.ylabel(metric)
+    plt.xlabel('Epoch')
+    plt.legend()
+    plt.show()
+
+plot_history(history_concat, history_add, 'val_accuracy')
+plot_history(history_concat, history_add, 'val_loss')

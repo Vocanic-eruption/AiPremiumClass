@@ -1,0 +1,103 @@
+# 推理模型
+def build_inference_models(model, max_input_len, max_target_len, lstm_units=256):
+    # 编码器推理模型
+    encoder_inputs = model.input[0]
+    encoder_outputs, state_h_enc, state_c_enc = model.layers[5].output  # 获取encoder LSTM层
+    encoder_model = Model(encoder_inputs, [encoder_outputs, state_h_enc, state_c_enc])
+    
+    # 解码器推理模型
+    decoder_inputs = model.input[1]
+    decoder_embedding = model.layers[3](decoder_inputs)  # decoder embedding层
+    decoder_lstm = model.layers[6]  # decoder LSTM层
+    
+    # 推理时的decoder输入状态
+    decoder_state_input_h = Input(shape=(lstm_units,))
+    decoder_state_input_c = Input(shape=(lstm_units,))
+    decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
+    
+    # encoder输出用于attention
+    encoder_outputs_input = Input(shape=(max_input_len, lstm_units))
+    
+    # decoder推理
+    decoder_outputs, state_h_dec, state_c_dec = decoder_lstm(
+        decoder_embedding, initial_state=decoder_states_inputs
+    )
+    
+    # attention层
+    attention = model.layers[7]
+    context_vector = attention([decoder_outputs, encoder_outputs_input])
+    
+    # 合并方式需要与训练时一致
+    if isinstance(model.layers[8], Concatenate):
+        decoder_combined_context = Concatenate(axis=-1)([decoder_outputs, context_vector])
+    else:
+        decoder_combined_context = tf.keras.layers.Add()([decoder_outputs, context_vector])
+    
+    # dense层
+    decoder_dense = model.layers[9]
+    decoder_outputs = decoder_dense(decoder_combined_context)
+    
+    decoder_states = [state_h_dec, state_c_dec]
+    decoder_model = Model(
+        [decoder_inputs, encoder_outputs_input] + decoder_states_inputs,
+        [decoder_outputs] + decoder_states
+    )
+    
+    return encoder_model, decoder_model
+
+# 构建推理模型
+encoder_model, decoder_model = build_inference_models(model, max_input_len, max_target_len)
+
+# 生成对联的函数
+def generate_couplet(input_text, input_tokenizer, target_tokenizer, 
+                    encoder_model, decoder_model, max_input_len, max_target_len):
+    # 处理输入文本
+    input_seq = input_tokenizer.texts_to_sequences([input_text])
+    input_seq = pad_sequences(input_seq, maxlen=max_input_len, padding='post')
+    
+    # 编码器推理
+    encoder_outputs, state_h, state_c = encoder_model.predict(input_seq)
+    
+    # 初始化解码器输入
+    target_seq = np.zeros((1, 1))
+    target_seq[0, 0] = target_tokenizer.word_index['<start>']
+    
+    stop_condition = False
+    decoded_sentence = []
+    
+    while not stop_condition:
+        # 解码器推理
+        output_tokens, h, c = decoder_model.predict(
+            [target_seq, encoder_outputs] + [state_h, state_c]
+        )
+        
+        # 获取预测的词
+        sampled_token_index = np.argmax(output_tokens[0, -1, :])
+        sampled_word = target_tokenizer.index_word.get(sampled_token_index, '')
+        
+        if sampled_word == '<end>' or len(decoded_sentence) >= max_target_len:
+            stop_condition = True
+        else:
+            decoded_sentence.append(sampled_word)
+        
+        # 更新目标序列和状态
+        target_seq = np.zeros((1, 1))
+        target_seq[0, 0] = sampled_token_index
+        state_h, state_c = h, c
+    
+    return ''.join(decoded_sentence)
+
+# 测试生成对联
+test_input = "春风送暖"
+generated_output = generate_couplet(
+    test_input, 
+    input_tokenizer, 
+    target_tokenizer,
+    encoder_model,
+    decoder_model,
+    max_input_len,
+    max_target_len
+)
+
+print(f"上联: {test_input}")
+print(f"生成的下联: {generated_output}")

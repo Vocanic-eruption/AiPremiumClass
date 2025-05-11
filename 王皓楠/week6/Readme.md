@@ -1,0 +1,1 @@
+RNN_sequence和LSTM_sequence为作业1的文件。 作业2中使用天气数据集时，数据集的预处理，绘画函数的改变比较多，并加上了简单的tensorboard使用。
